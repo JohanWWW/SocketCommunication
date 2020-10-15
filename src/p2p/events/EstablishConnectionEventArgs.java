@@ -1,4 +1,6 @@
-package com.company;
+package p2p.events;
+
+import p2p.Peer;
 
 import java.net.Socket;
 

@@ -1,5 +1,9 @@
 package com.company;
 
+import p2p.Peer;
+import p2p.events.EstablishConnectionEventArgs;
+import p2p.util.CancellationToken;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
