@@ -1,4 +1,4 @@
-package p2p.util;
+package p2p;
 
 public class CancellationToken {
     private Runnable _cancellationRequestSubscription;
@@ -7,7 +7,7 @@ public class CancellationToken {
     /**
      * Creates an event subscription
      */
-    public void setCancellationRequestSubscription(Runnable subscriber) {
+    void setCancellationRequestSubscription(Runnable subscriber) {
         _cancellationRequestSubscription = subscriber;
     }
 

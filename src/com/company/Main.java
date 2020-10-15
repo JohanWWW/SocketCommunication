@@ -2,7 +2,7 @@ package com.company;
 
 import p2p.Peer;
 import p2p.events.EstablishConnectionEventArgs;
-import p2p.util.CancellationToken;
+import p2p.CancellationToken;
 
 import java.io.*;
 import java.net.Socket;

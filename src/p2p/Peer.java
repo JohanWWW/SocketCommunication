@@ -1,7 +1,6 @@
 package p2p;
 
 import p2p.events.EstablishConnectionEventArgs;
-import p2p.util.CancellationToken;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
