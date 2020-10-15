@@ -18,11 +18,11 @@ public class Main {
         System.out.print("Please enter a port number: ");
         _portNumber = Integer.parseInt(readLine().trim());
         _peer = new Peer(_portNumber);
-        _peer.setEstablishConnectionSubscription(Main::onPeerReceiveConnection);
-        menu();
+        _peer.setEstablishConnectionSubscription(Main::onEstablishedConnection);
+        start();
     }
 
-    private static void menu() {
+    private static void start() {
         CancellationToken listeningTask = null;
         while (true) {
             System.out.println("What do you want to do?");
@@ -69,8 +69,8 @@ public class Main {
         }
     }
 
-    private static void onPeerReceiveConnection(EstablishConnectionEventArgs eventArgs) {
-        Socket client = eventArgs.getClient();
+    private static void onEstablishedConnection(EstablishConnectionEventArgs args) {
+        Socket client = args.getClient();
         System.out.printf("Accepted incoming connection from [%s:%s]\n", client.getInetAddress().getHostAddress(), client.getPort());
         try (InputStream inputStream = client.getInputStream()) {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
