@@ -1,26 +1,31 @@
 package com.company;
 
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class EstablishConnectionEventArgs {
-    private final Peer _server;
+    private final Peer _serverPeer;
     private final Socket _client;
 
     public EstablishConnectionEventArgs(Socket client) {
         _client = client;
-        _server = null;
+        _serverPeer = null;
     }
 
     public EstablishConnectionEventArgs(Peer server, Socket client) {
-        _server = server;
+        _serverPeer = server;
         _client = client;
     }
 
-    public Peer getServer() {
-        return _server;
+    /**
+     * @return the peer that triggered the event
+     */
+    public Peer getEventPublisher() {
+        return _serverPeer;
     }
 
+    /**
+     * @return the client socket
+     */
     public Socket getClient() {
         return _client;
     }
