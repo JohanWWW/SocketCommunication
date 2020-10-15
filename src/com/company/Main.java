@@ -1,5 +1,6 @@
 package com.company;
 
+import gui.view.MainWindow;
 import p2p.Peer;
 import p2p.events.EstablishConnectionEventArgs;
 import p2p.CancellationToken;
@@ -14,12 +15,13 @@ public class Main {
     private static int _portNumber;
 
     public static void main(String[] args) {
+        MainWindow mainWindow = new MainWindow();
 
-        System.out.print("Please enter a port number: ");
+        /*System.out.print("Please enter a port number: ");
         _portNumber = Integer.parseInt(readLine().trim());
         _peer = new Peer(_portNumber);
         _peer.setEstablishConnectionSubscription(Main::onEstablishedConnection);
-        start();
+        start();*/
     }
 
     private static void start() {
