@@ -1,5 +1,8 @@
 package gui.view;
 
+import events.Event;
+import events.EventArgs;
+import events.EventSubscriber;
 import gui.viewmodel.MainWindowViewModel;
 
 import javax.swing.*;
@@ -82,10 +85,10 @@ public class MainWindow extends Frame {
         _transmitButton = new JButton("Transmit");
 
         // Subscribe on listeners
-        _senderPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_senderPortNumberTextField, args -> _mainWindowViewModel.setSenderPortNumber(args.getValue())));
-        _receiverPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_receiverPortNumberTextField, args -> _mainWindowViewModel.setReceiverPortNumber(args.getValue())));
-        _ipAddressTextField.getDocument().addDocumentListener(TextFieldListener.on(_ipAddressTextField, args -> _mainWindowViewModel.setIpAddress(args.getValue())));
-        _messageTextField.getDocument().addDocumentListener(TextFieldListener.on(_messageTextField, args -> _mainWindowViewModel.setMessage(args.getValue())));
+        _senderPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_senderPortNumberTextField, (s, e) -> _mainWindowViewModel.setSenderPortNumber(e.getValue())));
+        _receiverPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_receiverPortNumberTextField, (s, e) -> _mainWindowViewModel.setReceiverPortNumber(e.getValue())));
+        _ipAddressTextField.getDocument().addDocumentListener(TextFieldListener.on(_ipAddressTextField, (s, e) -> _mainWindowViewModel.setIpAddress(e.getValue())));
+        _messageTextField.getDocument().addDocumentListener(TextFieldListener.on(_messageTextField, (s, e) -> _mainWindowViewModel.setMessage(e.getValue())));
         _beginListenButton.addActionListener(a -> _mainWindowViewModel.createPeer());
         _transmitButton.addActionListener(a -> _mainWindowViewModel.transmitMessage());
     }
@@ -121,36 +124,46 @@ public class MainWindow extends Frame {
 
 class TextFieldListener implements DocumentListener {
     private final JTextField _sender;
-    private final Consumer<TextFieldEventArgs> _subscriber;
 
-    private TextFieldListener(JTextField sender, Consumer<TextFieldEventArgs> subscriber) {
+    private final Event<TextFieldEventArgs> onInserted;
+    private final Event<TextFieldEventArgs> onRemoved;
+    private final Event<TextFieldEventArgs> onChanged;
+
+    private TextFieldListener(JTextField sender, EventSubscriber<TextFieldEventArgs> subscriber) {
+        onInserted = new Event<>(this);
+        onRemoved = new Event<>(this);
+        onChanged = new Event<>(this);
+        onInserted.subscribe(subscriber);
+        onRemoved.subscribe(subscriber);
+        onChanged.subscribe(subscriber);
         _sender = sender;
-        _subscriber = subscriber;
     }
 
-    public static TextFieldListener on(JTextField source, Consumer<TextFieldEventArgs> subscriber) {
+    public static TextFieldListener on(JTextField source, EventSubscriber<TextFieldEventArgs> subscriber) {
         return new TextFieldListener(source, subscriber);
     }
 
+    public TextFieldListener andAdd(EventSubscriber<TextFieldEventArgs> subscriber) {
+        onInserted.subscribe(subscriber);
+        onRemoved.subscribe(subscriber);
+        onChanged.subscribe(subscriber);
+        return this;
+    }
+
     public void insertUpdate(DocumentEvent e) {
-        publishEvent(new TextFieldEventArgs(_sender.getText()));
+        onInserted.raise(new TextFieldEventArgs(_sender.getText()));
     }
 
     public void removeUpdate(DocumentEvent e) {
-        publishEvent(new TextFieldEventArgs(_sender.getText()));
+        onRemoved.raise(new TextFieldEventArgs(_sender.getText()));
     }
 
     public void changedUpdate(DocumentEvent e) {
-        publishEvent(new TextFieldEventArgs(_sender.getText()));
-    }
-
-    private void publishEvent(TextFieldEventArgs args) {
-        if (_subscriber != null)
-            _subscriber.accept(args);
+        onChanged.raise(new TextFieldEventArgs(_sender.getText()));
     }
 }
 
-class TextFieldEventArgs {
+class TextFieldEventArgs extends EventArgs {
     private final String _value;
 
     public TextFieldEventArgs(String value) {
