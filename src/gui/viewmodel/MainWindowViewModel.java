@@ -64,7 +64,7 @@ public class MainWindowViewModel extends ViewModelBase {
     public void createPeer() {
         destroyPreviousPeer();
         _peer = new Peer(Integer.parseInt(_senderPortNumber.trim()));
-        _peer.setEstablishConnectionSubscription(this::onEstablishedConnection);
+        _peer.addOnEstablishedConnectionSubscriber(this::onEstablishedConnection);
         try {
             _peer.beginListen(new CancellationToken());
         } catch (IOException e) {
@@ -72,7 +72,7 @@ public class MainWindowViewModel extends ViewModelBase {
         }
     }
 
-    private void onEstablishedConnection(EstablishConnectionEventArgs args) {
+    private void onEstablishedConnection(Object eventSource, EstablishConnectionEventArgs args) {
         Socket client = args.getClient();
         try (InputStream inputStream = client.getInputStream()) {
             DataInputStream dataInputStream = new DataInputStream(inputStream);

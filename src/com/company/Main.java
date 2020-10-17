@@ -20,7 +20,7 @@ public class Main {
         /*System.out.print("Please enter a port number: ");
         _portNumber = Integer.parseInt(readLine().trim());
         _peer = new Peer(_portNumber);
-        _peer.setEstablishConnectionSubscription(Main::onEstablishedConnection);
+        _peer.addOnEstablishedConnectionSubscriber(Main::onEstablishedConnection);
         start();*/
     }
 
@@ -71,7 +71,7 @@ public class Main {
         }
     }
 
-    private static void onEstablishedConnection(EstablishConnectionEventArgs args) {
+    private static void onEstablishedConnection(Object eventSource, EstablishConnectionEventArgs args) {
         Socket client = args.getClient();
         System.out.printf("Accepted incoming connection from [%s:%s]\n", client.getInetAddress().getHostAddress(), client.getPort());
         try (InputStream inputStream = client.getInputStream()) {

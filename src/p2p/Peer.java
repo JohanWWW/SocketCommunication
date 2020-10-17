@@ -1,6 +1,8 @@
 package p2p;
 
 import p2p.events.EstablishConnectionEventArgs;
+import p2p.events.Event;
+import p2p.events.EventSubscriber;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -13,7 +15,8 @@ import java.util.function.Consumer;
 public class Peer implements Closeable {
     private int _port;
     private ServerSocket _serverSocket;
-    private Consumer<EstablishConnectionEventArgs> _establishConnectionSubscription;
+
+    private final Event<EstablishConnectionEventArgs> _onEstablishedConnection;
 
     /**
      *
@@ -21,6 +24,7 @@ public class Peer implements Closeable {
      */
     public Peer(int port) {
         _port = port;
+        _onEstablishedConnection = new Event<>(this);
     }
 
     /**
@@ -34,8 +38,8 @@ public class Peer implements Closeable {
         CompletableFuture.runAsync(() -> {
             while (!cancellationToken.isCancellationRequested()) {
                 try (Socket client = _serverSocket.accept()) {
-                    var eventArgs = new EstablishConnectionEventArgs(this, client);
-                    raiseOnEstablishConnectionEvent(eventArgs);
+                    var eventArgs = new EstablishConnectionEventArgs(client);
+                    _onEstablishedConnection.raise(eventArgs);
                 } catch(SocketException e) {
                     // Is thrown when server socket is closed while listening for incoming connections
                     // Do nothing
@@ -70,10 +74,11 @@ public class Peer implements Closeable {
     }
 
     /**
-     * Creates an event subscription
+     * Adds an event subscription to the event handler
+     * @param subscriber
      */
-    public void setEstablishConnectionSubscription(Consumer<EstablishConnectionEventArgs> subscriber) {
-        _establishConnectionSubscription = subscriber;
+    public void addOnEstablishedConnectionSubscriber(EventSubscriber<EstablishConnectionEventArgs> subscriber) {
+        _onEstablishedConnection.subscribe(subscriber);
     }
 
     public void close() {
@@ -82,12 +87,6 @@ public class Peer implements Closeable {
                 _serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void raiseOnEstablishConnectionEvent(EstablishConnectionEventArgs eventArgs) {
-        if (_establishConnectionSubscription != null) {
-            _establishConnectionSubscription.accept(eventArgs);
         }
     }
 
