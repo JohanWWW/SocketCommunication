@@ -57,10 +57,17 @@ public class MainWindow extends Frame {
         _mainWindowViewModel = new MainWindowViewModel();
         _mainWindowViewModel.addMemberValueChangedEventSubscriber((eventSource, args) -> {
             switch (args.getMemberName()) {
-                case "senderPortNumber" -> SwingUtilities.invokeLater(() -> setSenderPortNumberText(_mainWindowViewModel.getSenderPortNumber()));
-                case "receiverPortNumber" -> SwingUtilities.invokeLater(() -> setReceiverPortNumber(_mainWindowViewModel.getReceiverPortNumber()));
-                case "ipAddress" -> SwingUtilities.invokeLater(() -> setIpAddressText(_mainWindowViewModel.getIpAddress()));
-                case "message" -> SwingUtilities.invokeLater(() -> setMessageText(_mainWindowViewModel.getMessage()));
+                case MainWindowViewModel.Member.senderPortNumber ->
+                        SwingUtilities.invokeLater(() -> setSenderPortNumberText(_mainWindowViewModel.getSenderPortNumber()));
+
+                case MainWindowViewModel.Member.receiverPortNumber ->
+                        SwingUtilities.invokeLater(() -> setReceiverPortNumber(_mainWindowViewModel.getReceiverPortNumber()));
+
+                case MainWindowViewModel.Member.ipAddress ->
+                        SwingUtilities.invokeLater(() -> setIpAddressText(_mainWindowViewModel.getIpAddress()));
+
+                case MainWindowViewModel.Member.message ->
+                        SwingUtilities.invokeLater(() -> setMessageText(_mainWindowViewModel.getMessage()));
             }
         });
     }
