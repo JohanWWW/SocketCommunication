@@ -1,5 +1,6 @@
 package p2p;
 
+import events.EventArgs;
 import p2p.events.EstablishConnectionEventArgs;
 import events.Event;
 import events.EventSubscriber;
@@ -49,7 +50,7 @@ public class Peer implements Closeable {
         });
 
         // On cancel, close server socket so that it stops listening for incoming connections
-        cancellationToken.setCancellationRequestSubscription(this::closeServerSocket);
+        cancellationToken.addCancellationRequestedSubscriber(this::onServerSocketClosed);
     }
 
     /**
@@ -89,7 +90,7 @@ public class Peer implements Closeable {
         }
     }
 
-    private void closeServerSocket() {
+    private void onServerSocketClosed(Object eventSource, EventArgs args) {
         try {
             _serverSocket.close();
         } catch (IOException e) {
