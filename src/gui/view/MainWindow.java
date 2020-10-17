@@ -55,8 +55,8 @@ public class MainWindow extends Frame {
 
     private void initializeViewModels() {
         _mainWindowViewModel = new MainWindowViewModel();
-        _mainWindowViewModel.addPropertyChangedEventSubscriber((eventSource, args) -> {
-            switch (args.getPropertyName()) {
+        _mainWindowViewModel.addMemberValueChangedEventSubscriber((eventSource, args) -> {
+            switch (args.getMemberName()) {
                 case "senderPortNumber" -> SwingUtilities.invokeLater(() -> setSenderPortNumberText(_mainWindowViewModel.getSenderPortNumber()));
                 case "receiverPortNumber" -> SwingUtilities.invokeLater(() -> setReceiverPortNumber(_mainWindowViewModel.getReceiverPortNumber()));
                 case "ipAddress" -> SwingUtilities.invokeLater(() -> setIpAddressText(_mainWindowViewModel.getIpAddress()));

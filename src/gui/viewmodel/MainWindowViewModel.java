@@ -26,7 +26,7 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     public void setSenderPortNumber(String value) {
-        setProperty(value, _senderPortNumber, () -> _senderPortNumber = value, "senderPortNumber");
+        setMemberValue(value, _senderPortNumber, () -> _senderPortNumber = value, "senderPortNumber");
     }
 
     public String getReceiverPortNumber() {
@@ -34,7 +34,7 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     public void setReceiverPortNumber(String value) {
-        setProperty(value, _receiverPortNumber, () -> _receiverPortNumber = value, "receiverPortNumber");
+        setMemberValue(value, _receiverPortNumber, () -> _receiverPortNumber = value, "receiverPortNumber");
     }
 
     public String getIpAddress() {
@@ -42,7 +42,7 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     public void setIpAddress(String value) {
-        setProperty(value, _ipAddress, () -> _ipAddress = value, "ipAddress");
+        setMemberValue(value, _ipAddress, () -> _ipAddress = value, "ipAddress");
     }
 
     public String getMessage() {
@@ -50,7 +50,7 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     public void setMessage(String value) {
-        setProperty(value, _message, () -> _message = value, "message");
+        setMemberValue(value, _message, () -> _message = value, "message");
     }
 
     public void transmitMessage() {
