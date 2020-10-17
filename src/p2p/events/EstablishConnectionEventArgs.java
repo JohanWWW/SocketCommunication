@@ -1,28 +1,14 @@
 package p2p.events;
 
-import p2p.Peer;
+import events.EventArgs;
 
 import java.net.Socket;
 
-public class EstablishConnectionEventArgs {
-    private final Peer _serverPeer;
+public class EstablishConnectionEventArgs extends EventArgs {
     private final Socket _client;
 
     public EstablishConnectionEventArgs(Socket client) {
         _client = client;
-        _serverPeer = null;
-    }
-
-    public EstablishConnectionEventArgs(Peer server, Socket client) {
-        _serverPeer = server;
-        _client = client;
-    }
-
-    /**
-     * @return the peer that triggered the event
-     */
-    public Peer getEventPublisher() {
-        return _serverPeer;
     }
 
     /**

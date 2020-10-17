@@ -1,6 +1,9 @@
 package p2p;
 
+import events.EventArgs;
 import p2p.events.EstablishConnectionEventArgs;
+import events.Event;
+import events.EventSubscriber;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -8,12 +11,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class Peer implements Closeable {
     private int _port;
     private ServerSocket _serverSocket;
-    private Consumer<EstablishConnectionEventArgs> _establishConnectionSubscription;
+
+    private final Event<EstablishConnectionEventArgs> _onEstablishedConnection;
 
     /**
      *
@@ -21,6 +24,7 @@ public class Peer implements Closeable {
      */
     public Peer(int port) {
         _port = port;
+        _onEstablishedConnection = new Event<>(this);
     }
 
     /**
@@ -34,8 +38,8 @@ public class Peer implements Closeable {
         CompletableFuture.runAsync(() -> {
             while (!cancellationToken.isCancellationRequested()) {
                 try (Socket client = _serverSocket.accept()) {
-                    var eventArgs = new EstablishConnectionEventArgs(this, client);
-                    raiseOnEstablishConnectionEvent(eventArgs);
+                    var eventArgs = new EstablishConnectionEventArgs(client);
+                    _onEstablishedConnection.raise(eventArgs);
                 } catch(SocketException e) {
                     // Is thrown when server socket is closed while listening for incoming connections
                     // Do nothing
@@ -46,7 +50,7 @@ public class Peer implements Closeable {
         });
 
         // On cancel, close server socket so that it stops listening for incoming connections
-        cancellationToken.setCancellationRequestSubscription(this::closeServerSocket);
+        cancellationToken.addCancellationRequestedSubscriber(this::onServerSocketClosed);
     }
 
     /**
@@ -70,10 +74,11 @@ public class Peer implements Closeable {
     }
 
     /**
-     * Creates an event subscription
+     * Adds an event subscription to the event handler
+     * @param subscriber
      */
-    public void setEstablishConnectionSubscription(Consumer<EstablishConnectionEventArgs> subscriber) {
-        _establishConnectionSubscription = subscriber;
+    public void addOnEstablishedConnectionSubscriber(EventSubscriber<EstablishConnectionEventArgs> subscriber) {
+        _onEstablishedConnection.subscribe(subscriber);
     }
 
     public void close() {
@@ -85,13 +90,7 @@ public class Peer implements Closeable {
         }
     }
 
-    private void raiseOnEstablishConnectionEvent(EstablishConnectionEventArgs eventArgs) {
-        if (_establishConnectionSubscription != null) {
-            _establishConnectionSubscription.accept(eventArgs);
-        }
-    }
-
-    private void closeServerSocket() {
+    private void onServerSocketClosed(Object eventSource, EventArgs args) {
         try {
             _serverSocket.close();
         } catch (IOException e) {

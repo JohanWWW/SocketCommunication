@@ -1,14 +1,23 @@
 package p2p;
 
+import events.Event;
+import events.EventArgs;
+import events.EventSubscriber;
+
 public class CancellationToken {
-    private Runnable _cancellationRequestSubscription;
     private boolean _isCancellationRequested = false;
+
+    private final Event<EventArgs> _onCancellationRequested;
+
+    public CancellationToken() {
+        _onCancellationRequested = new Event<>(this);
+    }
 
     /**
      * Creates an event subscription
      */
-    void setCancellationRequestSubscription(Runnable subscriber) {
-        _cancellationRequestSubscription = subscriber;
+    void addCancellationRequestedSubscriber(EventSubscriber<EventArgs> subscriber) {
+        _onCancellationRequested.subscribe(subscriber);
     }
 
     /**
@@ -20,16 +29,11 @@ public class CancellationToken {
         if (_isCancellationRequested)
             return false;
         _isCancellationRequested = true;
-        raiseOnCancellationRequestedEvent();
+        _onCancellationRequested.raise(new EventArgs());
         return true;
     }
 
     public boolean isCancellationRequested() {
         return _isCancellationRequested;
-    }
-
-    private void raiseOnCancellationRequestedEvent() {
-        if (_cancellationRequestSubscription != null)
-            _cancellationRequestSubscription.run();
     }
 }
