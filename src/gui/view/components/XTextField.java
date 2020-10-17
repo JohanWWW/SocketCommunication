@@ -53,6 +53,15 @@ public class XTextField extends JTextField {
     }
 
     public static class TextFieldEventArgs extends EventArgs {
+        private final String text;
+
+        public TextFieldEventArgs(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
     }
 
     // This class internally listens for changes and routes them to the event handlers
@@ -77,19 +86,19 @@ public class XTextField extends JTextField {
         }
 
         public void insertUpdate(DocumentEvent e) {
-            var args = new TextFieldEventArgs();
+            var args = new TextFieldEventArgs(source.getText());
             this.onInsertedReference.raise(args);
             this.onUpdatedReference.raise(args);
         }
 
         public void removeUpdate(DocumentEvent e) {
-            var args = new TextFieldEventArgs();
+            var args = new TextFieldEventArgs(source.getText());
             this.onRemovedReference.raise(args);
             this.onUpdatedReference.raise(args);
         }
 
         public void changedUpdate(DocumentEvent e) {
-            var args = new TextFieldEventArgs();
+            var args = new TextFieldEventArgs(source.getText());
             this.onChangedReference.raise(args);
             this.onUpdatedReference.raise(args);
         }

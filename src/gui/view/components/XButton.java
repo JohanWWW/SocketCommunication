@@ -2,6 +2,7 @@ package gui.view.components;
 
 import events.Event;
 import events.EventArgs;
+import events.EventSubscriber;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,10 @@ public class XButton extends JButton {
 
     private void initializeEventHandlers() {
         onClicked = new Event<>(this);
+    }
+
+    public void addOnClickedSubscriber(EventSubscriber<ButtonClickedEventArgs> eventSubscriber) {
+        onClicked.subscribe(eventSubscriber);
     }
 
     public static class ButtonClickedEventArgs extends EventArgs {
