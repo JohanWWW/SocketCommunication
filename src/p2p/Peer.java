@@ -1,8 +1,8 @@
 package p2p;
 
 import p2p.events.EstablishConnectionEventArgs;
-import p2p.events.Event;
-import p2p.events.EventSubscriber;
+import events.Event;
+import events.EventSubscriber;
 
 import java.io.Closeable;
 import java.io.DataOutputStream;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class Peer implements Closeable {
     private int _port;

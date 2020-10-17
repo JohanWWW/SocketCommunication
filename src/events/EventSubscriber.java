@@ -1,4 +1,4 @@
-package p2p.events;
+package events;
 
 /**
  * The event subscriber method that will be invoked when an event is raised

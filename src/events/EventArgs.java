@@ -1,4 +1,4 @@
-package p2p.events;
+package events;
 
 /**
  * Base class for event arguments.

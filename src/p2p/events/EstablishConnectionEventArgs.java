@@ -1,6 +1,6 @@
 package p2p.events;
 
-import p2p.Peer;
+import events.EventArgs;
 
 import java.net.Socket;
 
