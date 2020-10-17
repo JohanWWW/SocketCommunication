@@ -11,7 +11,6 @@ import java.net.Socket;
 
 public class MainWindowViewModel extends ViewModelBase {
     private Peer peer;
-
     private String senderPortNumber;
     private String receiverPortNumber;
     private String ipAddress;
