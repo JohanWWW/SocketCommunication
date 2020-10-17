@@ -5,19 +5,19 @@ import events.EventArgs;
 import events.EventSubscriber;
 
 public class CancellationToken {
-    private boolean _isCancellationRequested = false;
+    private boolean isCancellationRequested = false;
 
-    private final Event<EventArgs> _onCancellationRequested;
+    private final Event<EventArgs> onCancellationRequested;
 
     public CancellationToken() {
-        _onCancellationRequested = new Event<>(this);
+        onCancellationRequested = new Event<>(this);
     }
 
     /**
      * Creates an event subscription
      */
     void addCancellationRequestedSubscriber(EventSubscriber<EventArgs> subscriber) {
-        _onCancellationRequested.subscribe(subscriber);
+        onCancellationRequested.subscribe(subscriber);
     }
 
     /**
@@ -26,14 +26,14 @@ public class CancellationToken {
      * @return false if already cancelled otherwise true
      */
     public boolean cancel() {
-        if (_isCancellationRequested)
+        if (isCancellationRequested)
             return false;
-        _isCancellationRequested = true;
-        _onCancellationRequested.raise(new EventArgs());
+        isCancellationRequested = true;
+        onCancellationRequested.raise(new EventArgs());
         return true;
     }
 
     public boolean isCancellationRequested() {
-        return _isCancellationRequested;
+        return isCancellationRequested;
     }
 }

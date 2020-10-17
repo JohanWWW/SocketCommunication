@@ -13,18 +13,18 @@ import java.net.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Peer implements Closeable {
-    private int _port;
-    private ServerSocket _serverSocket;
+    private final int port;
+    private ServerSocket serverSocket;
 
-    private final Event<EstablishConnectionEventArgs> _onEstablishedConnection;
+    private final Event<EstablishConnectionEventArgs> onEstablishedConnection;
 
     /**
      *
      * @param port The port number that the peer will be listening to
      */
     public Peer(int port) {
-        _port = port;
-        _onEstablishedConnection = new Event<>(this);
+        this.port = port;
+        onEstablishedConnection = new Event<>(this);
     }
 
     /**
@@ -33,13 +33,13 @@ public class Peer implements Closeable {
      * @throws IOException if fails to create server on given port number
      */
     public void beginListen(CancellationToken cancellationToken) throws IOException {
-        _serverSocket = new ServerSocket(_port);
+        serverSocket = new ServerSocket(port);
 
         CompletableFuture.runAsync(() -> {
             while (!cancellationToken.isCancellationRequested()) {
-                try (Socket client = _serverSocket.accept()) {
+                try (Socket client = serverSocket.accept()) {
                     var eventArgs = new EstablishConnectionEventArgs(client);
-                    _onEstablishedConnection.raise(eventArgs);
+                    onEstablishedConnection.raise(eventArgs);
                 } catch(SocketException e) {
                     // Is thrown when server socket is closed while listening for incoming connections
                     // Do nothing
@@ -70,7 +70,7 @@ public class Peer implements Closeable {
     }
 
     public String getAddress() {
-        return _serverSocket.getLocalSocketAddress().toString();
+        return serverSocket.getLocalSocketAddress().toString();
     }
 
     /**
@@ -78,13 +78,13 @@ public class Peer implements Closeable {
      * @param subscriber
      */
     public void addOnEstablishedConnectionSubscriber(EventSubscriber<EstablishConnectionEventArgs> subscriber) {
-        _onEstablishedConnection.subscribe(subscriber);
+        onEstablishedConnection.subscribe(subscriber);
     }
 
     public void close() {
         try {
-            if (_serverSocket != null)
-                _serverSocket.close();
+            if (serverSocket != null)
+                serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,7 +92,7 @@ public class Peer implements Closeable {
 
     private void onServerSocketClosed(Object eventSource, EventArgs args) {
         try {
-            _serverSocket.close();
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

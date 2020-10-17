@@ -10,9 +10,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Main {
-    private final static Scanner _scanner = new Scanner(System.in);
-    private static Peer _peer;
-    private static int _portNumber;
+    private final static Scanner scanner = new Scanner(System.in);
+    private static Peer peer;
+    private static int portNumber;
 
     public static void main(String[] args) {
         MainWindow mainWindow = new MainWindow();
@@ -36,12 +36,12 @@ public class Main {
                 case "0" -> {
                     try {
                         listeningTask = new CancellationToken();
-                        _peer.beginListen(listeningTask);
+                        peer.beginListen(listeningTask);
                     } catch (IOException e) {
                         e.printStackTrace();
                         continue;
                     }
-                    System.out.printf("Now listening on port [%s]...\n", _portNumber);
+                    System.out.printf("Now listening on port [%s]...\n", portNumber);
                 }
                 case "1" -> {
                     if (listeningTask.cancel())
@@ -57,13 +57,13 @@ public class Main {
                     System.out.print("Please enter port number: ");
                     int portNumber = Integer.parseInt(readLine().trim());
                     try {
-                        _peer.transmit(message, ipString, portNumber);
+                        peer.transmit(message, ipString, portNumber);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 case "3" -> {
-                    _peer.close();
+                    peer.close();
                     System.exit(0);
                 }
                 default -> System.out.println("You can only enter integers.");
@@ -84,6 +84,6 @@ public class Main {
     }
 
     private static String readLine() {
-        return _scanner.nextLine();
+        return scanner.nextLine();
     }
 }

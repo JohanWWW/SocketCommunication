@@ -11,17 +11,16 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.function.Consumer;
 
 public class MainWindow extends Frame {
-    private MainWindowViewModel _mainWindowViewModel;
+    private MainWindowViewModel mainWindowViewModel;
 
-    private JTextField _senderPortNumberTextField;
-    private JTextField _receiverPortNumberTextField;
-    private JTextField _ipAddressTextField;
-    private JTextField _messageTextField;
-    private JButton _beginListenButton;
-    private JButton _transmitButton;
+    private JTextField senderPortNumberTextField;
+    private JTextField receiverPortNumberTextField;
+    private JTextField ipAddressTextField;
+    private JTextField messageTextField;
+    private JButton beginListenButton;
+    private JButton transmitButton;
 
     public MainWindow() {
         setTitle("Transmit Message");
@@ -34,17 +33,17 @@ public class MainWindow extends Frame {
         var mainPanel = new Panel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-        var senderPortNumberPanel = createLabelledTextFieldArea("Sender Port", _senderPortNumberTextField);
-        var receiverPortNumberPanel = createLabelledTextFieldArea("Receiver Port", _receiverPortNumberTextField);
-        var ipAddressPanel = createLabelledTextFieldArea("IP Address", _ipAddressTextField);
-        var messagePanel = createLabelledTextFieldArea("Message", _messageTextField);
+        var senderPortNumberPanel = createLabelledTextFieldArea("Sender Port", senderPortNumberTextField);
+        var receiverPortNumberPanel = createLabelledTextFieldArea("Receiver Port", receiverPortNumberTextField);
+        var ipAddressPanel = createLabelledTextFieldArea("IP Address", ipAddressTextField);
+        var messagePanel = createLabelledTextFieldArea("Message", messageTextField);
 
         mainPanel.add(senderPortNumberPanel);
-        mainPanel.add(_beginListenButton);
+        mainPanel.add(beginListenButton);
         mainPanel.add(receiverPortNumberPanel);
         mainPanel.add(ipAddressPanel);
         mainPanel.add(messagePanel);
-        mainPanel.add(_transmitButton);
+        mainPanel.add(transmitButton);
 
         add(mainPanel);
         addWindowListener(new WindowAdapter() {
@@ -57,40 +56,40 @@ public class MainWindow extends Frame {
     }
 
     private void initializeViewModels() {
-        _mainWindowViewModel = new MainWindowViewModel();
-        _mainWindowViewModel.addMemberValueChangedEventSubscriber((eventSource, args) -> {
+        mainWindowViewModel = new MainWindowViewModel();
+        mainWindowViewModel.addMemberValueChangedEventSubscriber((eventSource, args) -> {
             switch (args.getMemberName()) {
                 case MainWindowViewModel.Member.senderPortNumber ->
-                        SwingUtilities.invokeLater(() -> setSenderPortNumberText(_mainWindowViewModel.getSenderPortNumber()));
+                        SwingUtilities.invokeLater(() -> setSenderPortNumberText(mainWindowViewModel.getSenderPortNumber()));
 
                 case MainWindowViewModel.Member.receiverPortNumber ->
-                        SwingUtilities.invokeLater(() -> setReceiverPortNumber(_mainWindowViewModel.getReceiverPortNumber()));
+                        SwingUtilities.invokeLater(() -> setReceiverPortNumber(mainWindowViewModel.getReceiverPortNumber()));
 
                 case MainWindowViewModel.Member.ipAddress ->
-                        SwingUtilities.invokeLater(() -> setIpAddressText(_mainWindowViewModel.getIpAddress()));
+                        SwingUtilities.invokeLater(() -> setIpAddressText(mainWindowViewModel.getIpAddress()));
 
                 case MainWindowViewModel.Member.message ->
-                        SwingUtilities.invokeLater(() -> setMessageText(_mainWindowViewModel.getMessage()));
+                        SwingUtilities.invokeLater(() -> setMessageText(mainWindowViewModel.getMessage()));
             }
         });
     }
 
     private void initializeComponents() {
         // Initialize private variables
-        _senderPortNumberTextField = new JTextField("3000");
-        _receiverPortNumberTextField = new JTextField("3000");
-        _ipAddressTextField = new JTextField("localhost");
-        _messageTextField = new JTextField("");
-        _beginListenButton = new JButton("Begin");
-        _transmitButton = new JButton("Transmit");
+        senderPortNumberTextField = new JTextField("3000");
+        receiverPortNumberTextField = new JTextField("3000");
+        ipAddressTextField = new JTextField("localhost");
+        messageTextField = new JTextField("");
+        beginListenButton = new JButton("Begin");
+        transmitButton = new JButton("Transmit");
 
         // Subscribe on listeners
-        _senderPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_senderPortNumberTextField, (s, e) -> _mainWindowViewModel.setSenderPortNumber(e.getValue())));
-        _receiverPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(_receiverPortNumberTextField, (s, e) -> _mainWindowViewModel.setReceiverPortNumber(e.getValue())));
-        _ipAddressTextField.getDocument().addDocumentListener(TextFieldListener.on(_ipAddressTextField, (s, e) -> _mainWindowViewModel.setIpAddress(e.getValue())));
-        _messageTextField.getDocument().addDocumentListener(TextFieldListener.on(_messageTextField, (s, e) -> _mainWindowViewModel.setMessage(e.getValue())));
-        _beginListenButton.addActionListener(a -> _mainWindowViewModel.createPeer());
-        _transmitButton.addActionListener(a -> _mainWindowViewModel.transmitMessage());
+        senderPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(senderPortNumberTextField, (s, e) -> mainWindowViewModel.setSenderPortNumber(e.getValue())));
+        receiverPortNumberTextField.getDocument().addDocumentListener(TextFieldListener.on(receiverPortNumberTextField, (s, e) -> mainWindowViewModel.setReceiverPortNumber(e.getValue())));
+        ipAddressTextField.getDocument().addDocumentListener(TextFieldListener.on(ipAddressTextField, (s, e) -> mainWindowViewModel.setIpAddress(e.getValue())));
+        messageTextField.getDocument().addDocumentListener(TextFieldListener.on(messageTextField, (s, e) -> mainWindowViewModel.setMessage(e.getValue())));
+        beginListenButton.addActionListener(a -> mainWindowViewModel.createPeer());
+        transmitButton.addActionListener(a -> mainWindowViewModel.transmitMessage());
     }
 
     private Panel createLabelledTextFieldArea(String labelValue, JTextField textField) {
@@ -102,28 +101,28 @@ public class MainWindow extends Frame {
     }
 
     private void setSenderPortNumberText(String value) {
-        if (!_senderPortNumberTextField.getText().equals(value))
-            _senderPortNumberTextField.setText(value);
+        if (!senderPortNumberTextField.getText().equals(value))
+            senderPortNumberTextField.setText(value);
     }
 
     private void setReceiverPortNumber(String value) {
-        if (!_receiverPortNumberTextField.getText().equals(value))
-            _receiverPortNumberTextField.setText(value);
+        if (!receiverPortNumberTextField.getText().equals(value))
+            receiverPortNumberTextField.setText(value);
     }
 
     private void setIpAddressText(String value) {
-        if (!_ipAddressTextField.getText().equals(value))
-            _ipAddressTextField.setText(value);
+        if (!ipAddressTextField.getText().equals(value))
+            ipAddressTextField.setText(value);
     }
 
     private void setMessageText(String value) {
-        if (!_messageTextField.getText().equals(value))
-            _messageTextField.setText(value);
+        if (!messageTextField.getText().equals(value))
+            messageTextField.setText(value);
     }
 }
 
 class TextFieldListener implements DocumentListener {
-    private final JTextField _sender;
+    private final JTextField sender;
 
     private final Event<TextFieldEventArgs> onInserted;
     private final Event<TextFieldEventArgs> onRemoved;
@@ -136,7 +135,7 @@ class TextFieldListener implements DocumentListener {
         onInserted.subscribe(subscriber);
         onRemoved.subscribe(subscriber);
         onChanged.subscribe(subscriber);
-        _sender = sender;
+        this.sender = sender;
     }
 
     public static TextFieldListener on(JTextField source, EventSubscriber<TextFieldEventArgs> subscriber) {
@@ -151,26 +150,26 @@ class TextFieldListener implements DocumentListener {
     }
 
     public void insertUpdate(DocumentEvent e) {
-        onInserted.raise(new TextFieldEventArgs(_sender.getText()));
+        onInserted.raise(new TextFieldEventArgs(sender.getText()));
     }
 
     public void removeUpdate(DocumentEvent e) {
-        onRemoved.raise(new TextFieldEventArgs(_sender.getText()));
+        onRemoved.raise(new TextFieldEventArgs(sender.getText()));
     }
 
     public void changedUpdate(DocumentEvent e) {
-        onChanged.raise(new TextFieldEventArgs(_sender.getText()));
+        onChanged.raise(new TextFieldEventArgs(sender.getText()));
     }
 }
 
 class TextFieldEventArgs extends EventArgs {
-    private final String _value;
+    private final String value;
 
     public TextFieldEventArgs(String value) {
-        _value = value;
+        this.value = value;
     }
 
     public String getValue() {
-        return _value;
+        return value;
     }
 }

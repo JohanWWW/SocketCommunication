@@ -10,12 +10,12 @@ import java.io.InputStream;
 import java.net.Socket;
 
 public class MainWindowViewModel extends ViewModelBase {
-    private Peer _peer;
+    private Peer peer;
 
-    private String _senderPortNumber;
-    private String _receiverPortNumber;
-    private String _ipAddress;
-    private String _message;
+    private String senderPortNumber;
+    private String receiverPortNumber;
+    private String ipAddress;
+    private String message;
 
     public static final class Member {
         public static final String senderPortNumber = "senderPortNumber";
@@ -29,40 +29,40 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     public String getSenderPortNumber() {
-        return _senderPortNumber;
+        return senderPortNumber;
     }
 
     public void setSenderPortNumber(String value) {
-        setMemberValue(value, _senderPortNumber, () -> _senderPortNumber = value, Member.senderPortNumber);
+        setMemberValue(value, senderPortNumber, () -> senderPortNumber = value, Member.senderPortNumber);
     }
 
     public String getReceiverPortNumber() {
-        return _receiverPortNumber;
+        return receiverPortNumber;
     }
 
     public void setReceiverPortNumber(String value) {
-        setMemberValue(value, _receiverPortNumber, () -> _receiverPortNumber = value, Member.receiverPortNumber);
+        setMemberValue(value, receiverPortNumber, () -> receiverPortNumber = value, Member.receiverPortNumber);
     }
 
     public String getIpAddress() {
-        return _ipAddress;
+        return ipAddress;
     }
 
     public void setIpAddress(String value) {
-        setMemberValue(value, _ipAddress, () -> _ipAddress = value, Member.ipAddress);
+        setMemberValue(value, ipAddress, () -> ipAddress = value, Member.ipAddress);
     }
 
     public String getMessage() {
-        return _message;
+        return message;
     }
 
     public void setMessage(String value) {
-        setMemberValue(value, _message, () -> _message = value, Member.message);
+        setMemberValue(value, message, () -> message = value, Member.message);
     }
 
     public void transmitMessage() {
         try {
-            _peer.transmit(_message, _ipAddress, Integer.parseInt(_receiverPortNumber.trim()));
+            peer.transmit(message, ipAddress, Integer.parseInt(receiverPortNumber.trim()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,10 +70,10 @@ public class MainWindowViewModel extends ViewModelBase {
 
     public void createPeer() {
         destroyPreviousPeer();
-        _peer = new Peer(Integer.parseInt(_senderPortNumber.trim()));
-        _peer.addOnEstablishedConnectionSubscriber(this::onEstablishedConnection);
+        peer = new Peer(Integer.parseInt(senderPortNumber.trim()));
+        peer.addOnEstablishedConnectionSubscriber(this::onEstablishedConnection);
         try {
-            _peer.beginListen(new CancellationToken());
+            peer.beginListen(new CancellationToken());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class MainWindowViewModel extends ViewModelBase {
     }
 
     private void destroyPreviousPeer() {
-        if (_peer != null)
-            _peer.close(); // This interrupts peer
+        if (peer != null)
+            peer.close(); // This interrupts peer
     }
 }
